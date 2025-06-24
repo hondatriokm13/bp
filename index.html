@@ -1,133 +1,121 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>Cari Data Kendaraan</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 0;
-      margin: 0;
-      background-color: #ffffff;
-    }
-    header {
-      position: relative;
-      padding: 20px;
-      background-color: #f8f8f8;
-      border-bottom: 1px solid #ccc;
-      text-align: center;
-    }
-    header img {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 200px;
-      height: auto;
-    }
-    header h1 {
-      font-size: 1.2rem;
-      color: #333;
-      margin: 0;
-      padding: 10px 0;
-    }
-    main {
-      padding: 20px;
-    }
+<meta charset="UTF-8" />
+<title>Cari Data Kendaraan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 0;
+    margin: 0;
+    background-color: #ffffff;
+  }
+  header {
+    padding: 10px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+  }
+  header img {
+    width: 120px;
+    height: auto;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 0;
+  }
+  main {
+    padding: 20px;
+  }
+  .search-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 0;
+  }
+  .search-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+  }
+  .search-header input {
+    padding: 8px;
+    width: 100%;
+    max-width: 400px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 10px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  th {
+    background-color: #f4f4f4;
+  }
+  tbody tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+  .loading {
+    font-style: italic;
+    color: #666;
+  }
+  .error {
+    color: red;
+  }
+  footer {
+    background-color: #f8f8f8;
+    border-top: 1px solid #ccc;
+    padding: 15px 20px;
+    font-size: 0.9rem;
+    position: relative;
+    text-align: center;
+  }
+  footer .footer-logo {
+    display: block;
+    width: 250px;
+    height: auto;
+    margin: 10px auto 0 auto;
+  }
+  @media (max-width: 600px) {
     .search-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
       gap: 10px;
-      padding: 10px 0;
-    }
-    .search-header h2 {
-      margin: 0;
-      font-size: 1.1rem;
-      color: #333;
-    }
-    .search-header input {
-      padding: 8px;
-      width: 100%;
-      max-width: 400px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      margin-top: 10px;
     }
     table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
+      min-width: 500px;
     }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-      white-space: nowrap;
-    }
-    th {
-      background-color: #f4f4f4;
-    }
-    tbody tr:nth-child(even) {
-      background-color: #fafafa;
-    }
-    .loading {
-      font-style: italic;
-      color: #666;
-    }
-    .error {
-      color: red;
-    }
-    footer {
-      background-color: #f8f8f8;
-      border-top: 1px solid #ccc;
-      padding: 15px 20px;
-      font-size: 0.9rem;
-      position: relative;
-      text-align: center;
-    }
-    footer .footer-logo {
-      display: block;
-      width: 200px;
-      height: auto;
-      margin: 10px auto 0 auto;
-    }
-    @media (max-width: 600px) {
-      header img {
-        position: static;
-        width: 150px;
-        margin-bottom: 10px;
-      }
-      header {
-        text-align: center;
-      }
-      .search-header {
-        flex-direction: column;
-        gap: 10px;
-      }
-      table {
-        min-width: 500px;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
   <header>
     <img src="https://www.hondacianjur.com/wp-content/uploads/2017/06/cropped-logo-honda.png" alt="Logo Honda">
-    <h1>Body &amp; Paint Honda Trio Motor Km.13 Gambut</h1>
+    <h1>Body &amp; Paint - Honda Trio Motor Km.13 Gambut</h1>
   </header>
 
   <main>
     <div class="search-header">
       <h2>Cari Data Kendaraan</h2>
-      <input type="text" id="searchInput" placeholder="Cari berdasarkan Nomer Polisi, Tipe Kendaraan, atau Nama Asuransi...">
+      <input type="text" id="searchInput" placeholder="Cari Nomer Polisi, Tipe Kendaraan, atau Nama Asuransi...">
     </div>
 
     <div id="message" class="loading">Memuat data...</div>
