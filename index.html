@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Cari Data Kendaraan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -21,11 +22,11 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      width: 300px;
+      width: 200px;
       height: auto;
     }
     header h1 {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       color: #333;
       margin: 0;
       padding: 10px 0;
@@ -35,14 +36,15 @@
     }
     .search-header {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 20px;
+      gap: 10px;
       padding: 10px 0;
     }
     .search-header h2 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       color: #333;
     }
     .search-header input {
@@ -53,15 +55,21 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      min-width: 700px;
     }
     th, td {
       border: 1px solid #ccc;
       padding: 8px;
       text-align: left;
+      white-space: nowrap;
     }
     th {
       background-color: #f4f4f4;
@@ -88,8 +96,29 @@
       position: absolute;
       bottom: 10px;
       right: 20px;
-      width: 120px;
+      width: 100px;
       height: auto;
+    }
+    @media (max-width: 600px) {
+      header img {
+        position: static;
+        width: 150px;
+        margin-bottom: 10px;
+      }
+      header {
+        text-align: center;
+      }
+      .search-header {
+        flex-direction: column;
+        gap: 10px;
+      }
+      table {
+        min-width: 500px;
+      }
+      .footer-logo {
+        position: static;
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
@@ -97,37 +126,39 @@
 
   <header>
     <img src="https://hondatriobanjarbaru.com/wp-content/uploads/2024/09/logo-400-x-100-piksel.png" alt="Logo Honda Trio">
-    <h1>Body &amp; Paint - Honda Trio Motor Km.13 Gambut</h1>
+    <h1>Body &amp; Paint Honda Trio Motor Km.13 Gambut</h1>
   </header>
 
   <main>
     <div class="search-header">
       <h2>Cari Data Kendaraan</h2>
-      <input type="text" id="searchInput" placeholder="Cari Nomer Polisi, Tipe Kendaraan, atau Nama Asuransi...">
+      <input type="text" id="searchInput" placeholder="Cari berdasarkan Nomer Polisi, Tipe Kendaraan, atau Nama Asuransi...">
     </div>
 
     <div id="message" class="loading">Memuat data...</div>
 
-    <table id="data-table" style="display:none;">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>Nomer Polisi</th>
-          <th>Tipe Kendaraan</th>
-          <th>Warna</th>
-          <th>Nama Asuransi</th>
-          <th>Proses</th>
-          <th>Estimasi Selesai</th>
-        </tr>
-      </thead>
-      <tbody id="tbody-data"></tbody>
-    </table>
+    <div class="table-wrapper">
+      <table id="data-table" style="display:none;">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nomer Polisi</th>
+            <th>Tipe Kendaraan</th>
+            <th>Warna</th>
+            <th>Nama Asuransi</th>
+            <th>Proses</th>
+            <th>Estimasi Selesai</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-data"></tbody>
+      </table>
+    </div>
   </main>
 
   <footer>
     <div class="footer-text">
       Honda Trio Motor Km.13 Gambut - Jalan A. Yani Km.13 No.168 Gambut Kab. Banjar<br>
-      No. Telp: (0511) 422 1476 / WhatsApp: 0813 5147 3388<br>
+      No. Telp: (0511) 422 1476 / 0813 5147 3388<br>
       Email: hondatrio_km13@yahoo.com
     </div>
     <img class="footer-logo" src="happy-to-serve.png" alt="Happy to Serve You">
