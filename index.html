@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cari Data Kendaraan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      background-color: #ffffff;
+    }
+    header {
+      position: relative;
+      padding: 20px;
+      background-color: #f8f8f8;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+    }
+    header img {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 300px;
+      height: auto;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: #333;
+      margin: 0;
+      padding: 10px 0;
+    }
+    main {
+      padding: 20px;
+    }
+    .search-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 0;
+    }
+    .search-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #333;
+    }
+    .search-header input {
+      padding: 8px;
+      width: 100%;
+      max-width: 400px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    .loading {
+      font-style: italic;
+      color: #666;
+    }
+    .error {
+      color: red;
+    }
+    footer {
+      background-color: #f8f8f8;
+      border-top: 1px solid #ccc;
+      padding: 15px 20px;
+      font-size: 0.9rem;
+      position: relative;
+      text-align: center;
+    }
+    .footer-logo {
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      width: 120px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="https://hondatriobanjarbaru.com/wp-content/uploads/2024/09/logo-400-x-100-piksel.png" alt="Logo Honda Trio">
+    <h1>Body &amp; Paint - Honda Trio Motor Km.13 Gambut</h1>
+  </header>
+
+  <main>
+    <div class="search-header">
+      <h2>Cari Data Kendaraan</h2>
+      <input type="text" id="searchInput" placeholder="Cari Nomer Polisi, Tipe Kendaraan, atau Nama Asuransi...">
+    </div>
+
+    <div id="message" class="loading">Memuat data...</div>
+
+    <table id="data-table" style="display:none;">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nomer Polisi</th>
+          <th>Tipe Kendaraan</th>
+          <th>Warna</th>
+          <th>Nama Asuransi</th>
+          <th>Proses</th>
+          <th>Estimasi Selesai</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-data"></tbody>
+    </table>
+  </main>
+
+  <footer>
+    <div class="footer-text">
+      Honda Trio Motor Km.13 Gambut - Jalan A. Yani Km.13 No.168 Gambut Kab. Banjar<br>
+      No. Telp: (0511) 422 1476 / WhatsApp: 0813 5147 3388<br>
+      Email: hondatrio_km13@yahoo.com
+    </div>
+    <img class="footer-logo" src="happy-to-serve.png" alt="Happy to Serve You">
+  </footer>
+
+  <script>
+    const API_URL = 'https://api.sheetbest.com/sheets/53be5113-4d51-4528-aaa2-39cf2b548bf5';
+    let allData = [];
+
+    async function loadData() {
+      const msgEl = document.getElementById('message');
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Error jaringan: ' + res.status);
+        allData = await res.json();
+        if (!Array.isArray(allData)) throw new Error('Format data tidak sesuai');
+
+        msgEl.textContent = '';
+      } catch (err) {
+        msgEl.textContent = 'Gagal memuat data: ' + err.message;
+        msgEl.className = 'error';
+        console.error(err);
+      }
+    }
+
+    function displayData(data) {
+      const table = document.getElementById('data-table');
+      const tbody = document.getElementById('tbody-data');
+      tbody.innerHTML = '';
+      if (data.length === 0) {
+        table.style.display = 'none';
+        return;
+      }
+      table.style.display = '';
+      data.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${item['Nomer Polisi'] || item.nomor_polisi || ''}</td>
+          <td>${item['Tipe Kendaraan'] || item.tipe_kendaraan || ''}</td>
+          <td>${item.Warna || item.warna || ''}</td>
+          <td>${item['Nama Asuransi'] || item.nama_asuransi || ''}</td>
+          <td>${item.Proses || item.proses || ''}</td>
+          <td>${item['Estimasi Selesai'] || item.estimasi_selesai || ''}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const keyword = e.target.value.toLowerCase().trim();
+      if (keyword === '') {
+        displayData([]);
+        return;
+      }
+      const filtered = allData.filter(item => {
+        const nomorPolisi = (item['Nomer Polisi'] || item.nomor_polisi || '').toLowerCase();
+        const tipeKendaraan = (item['Tipe Kendaraan'] || item.tipe_kendaraan || '').toLowerCase();
+        const asuransi = (item['Nama Asuransi'] || item.nama_asuransi || '').toLowerCase();
+        return nomorPolisi.includes(keyword) ||
+               tipeKendaraan.includes(keyword) ||
+               asuransi.includes(keyword);
+      });
+      displayData(filtered);
+    });
+
+    window.addEventListener('DOMContentLoaded', loadData);
+  </script>
+
+</body>
+</html>
