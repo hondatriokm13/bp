@@ -161,8 +161,11 @@
       try {
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error('Error jaringan: ' + res.status);
-        allData = await res.json();
-        if (!Array.isArray(allData)) throw new Error('Format data tidak sesuai');
+        let rawData = await res.json();
+        if (!Array.isArray(rawData)) throw new Error('Format data tidak sesuai');
+
+        // Ambil data mulai baris ke-5
+        allData = rawData.slice(3);
 
         msgEl.textContent = '';
       } catch (err) {
