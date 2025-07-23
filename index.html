@@ -1,109 +1,123 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<title>Cari Data Kendaraan</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    padding: 0;
-    margin: 0;
-    background-color: #ffffff;
-  }
-  header {
-    padding: 10px;
-    background-color: #f8f8f8;
-    border-bottom: 1px solid #ccc;
-    text-align: center;
-  }
-  header img {
-    width: 120px;
-    height: auto;
-    margin-bottom: 8px;
-  }
-  header h1 {
-    font-size: 1.2rem;
-    color: #333;
-    margin: 0;
-  }
-  main {
-    padding: 20px;
-  }
-  .search-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 0;
-  }
-  .search-header h2 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #333;
-  }
-  .search-header input {
-    padding: 8px;
-    width: 100%;
-    max-width: 400px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 10px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 700px;
-  }
-  th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-    white-space: nowrap;
-  }
-  th {
-    background-color: #f4f4f4;
-  }
-  tbody tr:nth-child(even) {
-    background-color: #fafafa;
-  }
-  .loading {
-    font-style: italic;
-    color: #666;
-  }
-  .error {
-    color: red;
-  }
-  footer {
-    background-color: #f8f8f8;
-    border-top: 1px solid #ccc;
-    padding: 15px 20px;
-    font-size: 0.9rem;
-    position: relative;
-    text-align: center;
-  }
-  footer .footer-logo {
-    display: block;
-    width: 250px;
-    height: auto;
-    margin: 10px auto 0 auto;
-  }
-  @media (max-width: 600px) {
+  <meta charset="UTF-8" />
+  <title>Cari Data Kendaraan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      background-color: #ffffff;
+    }
+    header {
+      padding: 10px;
+      background-color: #f8f8f8;
+      border-bottom: 1px solid #ccc;
+      text-align: center;
+    }
+    header img {
+      width: 120px;
+      height: auto;
+      margin-bottom: 8px;
+    }
+    header h1 {
+      font-size: 1.2rem;
+      color: #333;
+      margin: 0;
+    }
+    main {
+      padding: 20px;
+    }
     .search-header {
-      flex-direction: column;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
       gap: 10px;
+      padding: 10px 0;
+    }
+    .search-header input {
+      padding: 8px;
+      width: 100%;
+      max-width: 350px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .search-header button {
+      padding: 8px 16px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .search-header button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .search-header button:hover:enabled {
+      background-color: #0056b3;
+    }
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 10px;
     }
     table {
-      min-width: 500px;
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
     }
-  }
-</style>
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    .loading {
+      font-style: italic;
+      color: #666;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+    footer {
+      background-color: #f8f8f8;
+      border-top: 1px solid #ccc;
+      padding: 15px 20px;
+      font-size: 0.9rem;
+      position: relative;
+      text-align: center;
+    }
+    footer .footer-logo {
+      display: block;
+      width: 250px;
+      height: auto;
+      margin: 10px auto 0 auto;
+    }
+    @media (max-width: 600px) {
+      .search-header {
+        flex-direction: column;
+      }
+      table {
+        min-width: 500px;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -114,8 +128,8 @@
 
   <main>
     <div class="search-header">
-      <h2>Cari Data Kendaraan</h2>
-      <input type="text" id="searchInput" placeholder="Cari Nomer Polisi, Tipe Kendaraan, atau Nama Asuransi...">
+      <input type="text" id="searchInput" placeholder="Masukkan Nomer Polisi..." oninput="validateInput()">
+      <button id="searchButton" onclick="handleSearch()" disabled>Cari</button>
     </div>
 
     <div id="message" class="loading">Memuat data...</div>
@@ -153,7 +167,7 @@
   </footer>
 
   <script>
-    const API_URL = 'https://api.sheetbest.com/sheets/866baf9e-d5da-40f1-9ebb-f6a6c68ece72';
+    const API_URL = 'https://gsx2json.com/api?id=1W9FdTqMRfgYUD39vcr6jHZsinlLZEfgE1eKRsRsmPFI&sheet=TaskList';
     let allData = [];
 
     async function loadData() {
@@ -161,9 +175,9 @@
       try {
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error('Error jaringan: ' + res.status);
-        allData = await res.json();
-        if (!Array.isArray(allData)) throw new Error('Format data tidak sesuai');
-
+        const json = await res.json();
+        if (!Array.isArray(json.rows)) throw new Error('Format data tidak sesuai');
+        allData = json.rows;
         msgEl.textContent = '';
       } catch (err) {
         msgEl.textContent = 'Gagal memuat data: ' + err.message;
@@ -172,46 +186,58 @@
       }
     }
 
-    function displayData(data) {
-      const table = document.getElementById('data-table');
-      const tbody = document.getElementById('tbody-data');
-      tbody.innerHTML = '';
-      if (data.length === 0) {
-        table.style.display = 'none';
-        return;
-      }
-      table.style.display = '';
-      data.forEach((item, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${idx + 1}</td>
-          <td>${item['Nomer Polisi'] || item.nomor_polisi || ''}</td>
-          <td>${item['Tipe Kendaraan'] || item.tipe_kendaraan || ''}</td>
-          <td>${item.Warna || item.warna || ''}</td>
-          <td>${item['Nama Asuransi'] || item.nama_asuransi || ''}</td>
-          <td>${item.Proses || item.proses || ''}</td>
-          <td>${item['Estimasi Selesai'] || item.estimasi_selesai || ''}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+    function validateInput() {
+      const input = document.getElementById('searchInput').value.trim();
+      const button = document.getElementById('searchButton');
+      button.disabled = input.length < 7;
     }
 
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      const keyword = e.target.value.toLowerCase().trim();
-      if (keyword === '') {
+    function handleSearch() {
+      const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+      const msg = document.getElementById('message');
+      if (keyword.length < 7) {
+        msg.textContent = 'Nomer polisi minimal 7 karakter.';
+        msg.className = 'error';
         displayData([]);
         return;
       }
       const filtered = allData.filter(item => {
-        const nomorPolisi = (item['Nomer Polisi'] || item.nomor_polisi || '').toLowerCase();
-        const tipeKendaraan = (item['Tipe Kendaraan'] || item.tipe_kendaraan || '').toLowerCase();
-        const asuransi = (item['Nama Asuransi'] || item.nama_asuransi || '').toLowerCase();
-        return nomorPolisi.includes(keyword) ||
-               tipeKendaraan.includes(keyword) ||
-               asuransi.includes(keyword);
+        const nomorPolisi = (item['nomer_polisi'] || '').toLowerCase();
+        return nomorPolisi.includes(keyword);
       });
       displayData(filtered);
-    });
+    }
+
+    function displayData(data) {
+      const table = document.getElementById('data-table');
+      const tbody = document.getElementById('tbody-data');
+      const msg = document.getElementById('message');
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        table.style.display = 'none';
+        msg.textContent = 'Data yang dicari tidak ditemukan.';
+        msg.className = 'error';
+        return;
+      }
+
+      table.style.display = '';
+      msg.textContent = '';
+      msg.className = '';
+      data.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${item['nomer_polisi'] || ''}</td>
+          <td>${item['tipe_kendaraan'] || ''}</td>
+          <td>${item['warna'] || ''}</td>
+          <td>${item['nama_asuransi'] || ''}</td>
+          <td>${item['proses'] || ''}</td>
+          <td>${item['estimasi_selesai'] || ''}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
 
     window.addEventListener('DOMContentLoaded', loadData);
   </script>
