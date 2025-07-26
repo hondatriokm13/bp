@@ -7,7 +7,6 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 0;
       margin: 0;
       background-color: #ffffff;
     }
@@ -33,15 +32,14 @@
     .search-header {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
       justify-content: center;
       gap: 10px;
       padding: 10px 0;
     }
     .search-header input {
       padding: 8px;
-      width: 100%;
       max-width: 350px;
+      width: 100%;
       font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -62,60 +60,44 @@
     .search-header button:hover:enabled {
       background-color: #0056b3;
     }
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
+    .loading, .error {
+      text-align: center;
       margin-top: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-      white-space: nowrap;
-    }
-    th {
-      background-color: #f4f4f4;
-    }
-    tbody tr:nth-child(even) {
-      background-color: #fafafa;
     }
     .loading {
       font-style: italic;
       color: #666;
-      margin-top: 10px;
-      text-align: center;
     }
     .error {
       color: red;
-      margin-top: 10px;
-      text-align: center;
+    }
+    .result-table {
+      max-width: 600px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .result-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      vertical-align: top;
+    }
+    .result-table td.label {
+      width: 40%;
+      font-weight: bold;
+      background-color: #f4f4f4;
     }
     footer {
       background-color: #f8f8f8;
       border-top: 1px solid #ccc;
       padding: 15px 20px;
       font-size: 0.9rem;
-      position: relative;
       text-align: center;
     }
     footer .footer-logo {
       display: block;
       width: 250px;
-      height: auto;
-      margin: 10px auto 0 auto;
-    }
-    @media (max-width: 600px) {
-      .search-header {
-        flex-direction: column;
-      }
-      table {
-        min-width: 500px;
-      }
+      margin: 10px auto 0;
     }
   </style>
 </head>
@@ -134,22 +116,9 @@
 
     <div id="message" class="loading">Memuat data...</div>
 
-    <div class="table-wrapper">
-      <table id="data-table" style="display:none;">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Nomer Polisi</th>
-            <th>Tipe Kendaraan</th>
-            <th>Warna</th>
-            <th>Nama Asuransi</th>
-            <th>Proses</th>
-            <th>Estimasi Selesai</th>
-          </tr>
-        </thead>
-        <tbody id="tbody-data"></tbody>
-      </table>
-    </div>
+    <table class="result-table" id="resultTable" style="display:none;">
+      <tbody id="resultBody"></tbody>
+    </table>
   </main>
 
   <footer>
@@ -158,7 +127,7 @@
       Jalan A. Yani Km.13 No.168 Gambut Kab. Banjar<br>
       No. Telp: (0511) 422 1476<br>
       WhatsApp: 
-      <a href="https://wa.me/6281351473388?text=Halo,%20saya%20ingin%20menanyakan%20unit%20Body%20%26%20Paint.." target="_blank" rel="noopener noreferrer">
+      <a href="https://wa.me/6281351473388?text=Halo,%20saya%20ingin%20menanyakan%20unit%20Body%20%26%20Paint.." target="_blank">
         0813 5147 3388
       </a><br>
       Email: hondatrio_km13@yahoo.com
@@ -174,7 +143,6 @@
       const msgEl = document.getElementById('message');
       try {
         const res = await fetch(API_URL);
-        if (!res.ok) throw new Error('Error jaringan: ' + res.status);
         const json = await res.json();
         if (!Array.isArray(json.rows)) throw new Error('Format data tidak sesuai');
         allData = json.rows;
@@ -188,55 +156,50 @@
 
     function validateInput() {
       const input = document.getElementById('searchInput').value.trim();
-      const button = document.getElementById('searchButton');
-      button.disabled = input.length < 7;
+      document.getElementById('searchButton').disabled = input.length < 7;
     }
 
     function handleSearch() {
       const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
       const msg = document.getElementById('message');
+      const resultTable = document.getElementById('resultTable');
+      const resultBody = document.getElementById('resultBody');
+      resultBody.innerHTML = '';
+
       if (keyword.length < 7) {
         msg.textContent = 'Nomer polisi minimal 7 karakter.';
         msg.className = 'error';
-        displayData([]);
+        resultTable.style.display = 'none';
         return;
       }
-      const filtered = allData.filter(item => {
-        const nomorPolisi = (item['nomer_polisi'] || '').toLowerCase();
-        return nomorPolisi.includes(keyword);
-      });
-      displayData(filtered);
-    }
 
-    function displayData(data) {
-      const table = document.getElementById('data-table');
-      const tbody = document.getElementById('tbody-data');
-      const msg = document.getElementById('message');
-      tbody.innerHTML = '';
+      const found = allData.find(item => (item.nomer_polisi || '').toLowerCase().includes(keyword));
 
-      if (data.length === 0) {
-        table.style.display = 'none';
+      if (!found) {
         msg.textContent = 'Data yang dicari tidak ditemukan.';
         msg.className = 'error';
+        resultTable.style.display = 'none';
         return;
       }
 
-      table.style.display = '';
       msg.textContent = '';
       msg.className = '';
-      data.forEach((item, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${idx + 1}</td>
-          <td>${item['nomer_polisi'] || ''}</td>
-          <td>${item['tipe_kendaraan'] || ''}</td>
-          <td>${item['warna'] || ''}</td>
-          <td>${item['nama_asuransi'] || ''}</td>
-          <td>${item['proses'] || ''}</td>
-          <td>${item['estimasi_selesai'] || ''}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      resultTable.style.display = '';
+
+      const fields = {
+        'Nomer Polisi': found.nomer_polisi || '',
+        'Tipe Kendaraan': found.tipe_kendaraan || '',
+        'Warna': found.warna || '',
+        'Nama Asuransi': found.nama_asuransi || '',
+        'Proses': found.proses || '',
+        'Estimasi Selesai': found.estimasi_selesai || ''
+      };
+
+      for (const [label, value] of Object.entries(fields)) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td class="label">${label}</td><td>${value}</td>`;
+        resultBody.appendChild(row);
+      }
     }
 
     window.addEventListener('DOMContentLoaded', loadData);
